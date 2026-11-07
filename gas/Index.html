@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dapur KEMAS V1.00 - Unit PKK Perlis</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- html2canvas and jsPDF for 2-page PDF Cookbook Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <?!= include('css'); ?>
+</head>
+<body class="bg-[#0a0a0a] text-zinc-100 font-sans min-h-screen flex flex-col selection:bg-amber-500/30 selection:text-amber-200">
+
+  <!-- Header Banner -->
+  <header class="border-b border-amber-900/30 bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 px-4 py-3 sticky top-0 z-40 shadow-xl">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
+          <i data-lucide="utensils" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-amber-400 tracking-wide flex items-center gap-2">
+            Dapur KEMAS <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 font-mono">V1.00</span>
+          </h1>
+          <p class="text-xs text-zinc-400 hidden sm:block">Unit PKK KEMAS Negeri Perlis • Google Apps Script Powered</p>
+        </div>
+      </div>
+
+      <!-- Connection Status & Sync -->
+      <div class="flex items-center gap-3">
+        <div id="status-indicator" class="flex items-center gap-2 px-3 py-1 rounded-full text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="status-text" class="hidden sm:inline font-medium">Google Sheet Connected</span>
+        </div>
+        <button onclick="refreshDataFromSheet()" class="p-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors cursor-pointer" title="Muat Semula Data">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Error Alert Toast Container -->
+  <div id="toast-container" class="fixed top-16 right-4 z-50 max-w-sm space-y-2 pointer-events-none"></div>
+
+  <!-- Main Dynamic Container -->
+  <main id="app-content" class="flex-grow max-w-7xl w-full mx-auto px-4 py-6">
+    <!-- Loading State with Fail-Safe Timeout Recovery -->
+    <div id="loading-spinner" class="flex flex-col items-center justify-center py-20 text-center">
+      <div class="w-12 h-12 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin mb-4"></div>
+      <p class="text-zinc-300 font-bold text-sm">Memuatkan Pangkalan Data Dapur KEMAS...</p>
+      <p class="text-xs text-zinc-500 mt-1">Menghubung ke Google Sheet secara terus</p>
+      
+      <!-- Manual Bypass Button in case GAS connection takes time -->
+      <div class="mt-5 space-y-2">
+        <button onclick="forceLoadLocalData()" class="px-4 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-bold transition-all flex items-center gap-1.5 mx-auto cursor-pointer">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+          <span>Muat Terus Dengan Data Contoh KEMAS</span>
+        </button>
+        <p class="text-[11px] text-zinc-600">Klik di atas jika skrin mengambil masa melebihi 5 saat</p>
+      </div>
+    </div>
+
+    <!-- Active View Area -->
+    <div id="view-area" class="hidden" style="display: none;"></div>
+  </main>
+
+  <!-- Footer Navigation -->
+  <nav class="sticky bottom-0 bg-zinc-950 border-t border-zinc-800 px-4 py-2 z-40">
+    <div class="max-w-md mx-auto flex justify-around">
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center py-1 px-3 text-amber-400 font-bold transition-colors cursor-pointer">
+        <i data-lucide="layout-dashboard" class="w-5 h-5 mb-1"></i>
+        <span class="text-xs">Utama</span>
+      </button>
+      <button onclick="switchTab('recipes')" id="nav-recipes" class="flex flex-col items-center py-1 px-3 text-zinc-400 hover:text-amber-400 font-medium transition-colors cursor-pointer">
+        <i data-lucide="book-open" class="w-5 h-5 mb-1"></i>
+        <span class="text-xs">Resepi</span>
+      </button>
+      <button onclick="switchTab('add')" id="nav-add" class="flex flex-col items-center py-1 px-3 text-zinc-400 hover:text-amber-400 font-medium transition-colors cursor-pointer">
+        <i data-lucide="plus-circle" class="w-5 h-5 mb-1"></i>
+        <span class="text-xs">Tambah</span>
+      </button>
+      <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center py-1 px-3 text-zinc-400 hover:text-amber-400 font-medium transition-colors cursor-pointer">
+        <i data-lucide="settings" class="w-5 h-5 mb-1"></i>
+        <span class="text-xs">Tetapan</span>
+      </button>
+    </div>
+  </nav>
+
+  <?!= include('JavaScript'); ?>
+  <script>
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

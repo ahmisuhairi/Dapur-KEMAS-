@@ -1,0 +1,96 @@
+<style>
+  /**
+   * ==============================================================================
+   * DAPUR KEMAS V1.00 - STYLESHEET (css.html)
+   * Unit Pembangunan Komuniti & Pendidikan Kemahiran (PKK), KEMAS Perlis
+   * ==============================================================================
+   */
+  /* Custom Scrollbar for GAS Web Interface */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #09090b;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
+  }
+
+  /* Force display rules so spinner never gets stuck on screen */
+  #loading-spinner.is-hidden {
+    display: none !important;
+  }
+  #view-area.is-visible {
+    display: block !important;
+  }
+
+  /* Recipe Card Glow Animation */
+  .kemas-card-glow {
+    box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.08);
+  }
+
+  .recipe-card {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .recipe-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.25s ease-out forwards;
+  }
+
+  /* Multi-page Print / PDF Styles */
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 10mm 12mm;
+    }
+    html, body {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      overflow: visible !important;
+      height: auto !important;
+    }
+    .no-print, header, nav, #header, #filters, #recipe-list, #toast-container {
+      display: none !important;
+    }
+    #recipe-modal {
+      position: static !important;
+      inset: auto !important;
+      background: transparent !important;
+      padding: 0 !important;
+      overflow: visible !important;
+    }
+    #recipe-modal > div {
+      max-height: none !important;
+      overflow: visible !important;
+      border: none !important;
+      box-shadow: none !important;
+      background-color: #ffffff !important;
+    }
+    .printable-document {
+      position: static !important;
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+      overflow: visible !important;
+      padding: 0 !important;
+    }
+    .printable-document * {
+      color: #0f172a !important;
+    }
+  }
+</style>

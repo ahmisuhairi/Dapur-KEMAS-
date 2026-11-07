@@ -1,0 +1,1531 @@
+<script>
+  /**
+   * ==============================================================================
+   * DAPUR KEMAS V1.00 - CLIENT-SIDE SCRIPT (JavaScript.html)
+   * Unit Pembangunan Komuniti & Pendidikan Kemahiran (PKK), KEMAS Perlis
+   * ==============================================================================
+   * Pengendalian Keadaan (State Store) & Integrasi google.script.run
+   */
+
+  // Koleksi Data Contoh Rasmi KEMAS Negeri Perlis (Bagi Mod Luar Talian & Pemulihan Ralat)
+  const SAMPLE_KEMAS_DATA = {
+    recipes: [
+      {
+        ID_Resepi: 'RSP-PERLIS-001',
+        Nama_Resepi: 'Rendang Daging Warisan Perlis',
+        Kategori_Masakan: 'Tradisional Warisan',
+        Etnik_Kaum: 'Melayu',
+        Negeri_Asal: 'Perlis',
+        Jenis_Hidangan: 'Lauk Utama',
+        Tahap_Kesukaran: 'Sederhana',
+        Masa_Penyediaan_Minit: 30,
+        Masa_Memasak_Minit: 90,
+        Bilangan_Hidangan: 6,
+        Status: 'Diterbitkan',
+        Gambar_Utama: 'https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&q=80&w=800',
+        Deskripsi: 'Resepi ikonik warisan KEMAS Negeri Perlis. Menggunakan rempah-ratus segar tempatan, kerisik kelapa sangai wangi, dan santan pekat asli.',
+        Dicipta_Oleh: 'admin.pkk@kemas.gov.my'
+      },
+      {
+        ID_Resepi: 'RSP-PERLIS-002',
+        Nama_Resepi: 'Laksa Perlis Berkuah Pekat',
+        Kategori_Masakan: 'Tradisional Warisan',
+        Etnik_Kaum: 'Melayu',
+        Negeri_Asal: 'Perlis',
+        Jenis_Hidangan: 'Lauk Utama',
+        Tahap_Kesukaran: 'Sederhana',
+        Masa_Penyediaan_Minit: 40,
+        Masa_Memasak_Minit: 45,
+        Bilangan_Hidangan: 5,
+        Status: 'Diterbitkan',
+        Gambar_Utama: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&q=80&w=800',
+        Deskripsi: 'Laksa Perlis mempunyai kelainan khas dengan kuah ikan selayang rebus berserta daun kesum, bunga kantan segar dan daun selasih utara.',
+        Dicipta_Oleh: 'pm.masakan@kemas.gov.my'
+      },
+      {
+        ID_Resepi: 'RSP-PERLIS-003',
+        Nama_Resepi: 'Ikan Bakar Petai Sos Sambal Perlis',
+        Kategori_Masakan: 'Panggang & BBQ',
+        Etnik_Kaum: 'Siam / Thai Perlis',
+        Negeri_Asal: 'Perlis',
+        Jenis_Hidangan: 'Lauk Utama',
+        Tahap_Kesukaran: 'Mudah',
+        Masa_Penyediaan_Minit: 20,
+        Masa_Memasak_Minit: 25,
+        Bilangan_Hidangan: 4,
+        Status: 'Diterbitkan',
+        Gambar_Utama: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&q=80&w=800',
+        Deskripsi: 'Ikan siakap atau kembung segar dibalut daun pisang bersama pes sambal cili padi, asam jawa, dan taburan biji petai mentah.',
+        Dicipta_Oleh: 'pm.masakan@kemas.gov.my'
+      },
+      {
+        ID_Resepi: 'RSP-PERLIS-004',
+        Nama_Resepi: 'Pulut Mempelam Harum Manis Perlis',
+        Kategori_Masakan: 'Pencuci Mulut',
+        Etnik_Kaum: 'Melayu',
+        Negeri_Asal: 'Perlis',
+        Jenis_Hidangan: 'Pencuci Mulut / Dessert',
+        Tahap_Kesukaran: 'Mudah',
+        Masa_Penyediaan_Minit: 25,
+        Masa_Memasak_Minit: 30,
+        Bilangan_Hidangan: 4,
+        Status: 'Diterbitkan',
+        Gambar_Utama: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=800',
+        Deskripsi: 'Sajian pemanis mulut kebanggaan Negeri Perlis. Pulut kukus bersantan wangi disajikan bersama hirisan Harum Manis ranum lekit.',
+        Dicipta_Oleh: 'admin.pkk@kemas.gov.my'
+      },
+      {
+        ID_Resepi: 'RSP-MALAYSIA-005',
+        Nama_Resepi: 'Kuih Seri Muka Pandan Tradisional',
+        Kategori_Masakan: 'Kuih-Muih Tradisional',
+        Etnik_Kaum: 'Melayu',
+        Negeri_Asal: 'Kedah',
+        Jenis_Hidangan: 'Sarapan / Minum Petang',
+        Tahap_Kesukaran: 'Sederhana',
+        Masa_Penyediaan_Minit: 30,
+        Masa_Memasak_Minit: 40,
+        Bilangan_Hidangan: 8,
+        Status: 'Diterbitkan',
+        Gambar_Utama: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800',
+        Deskripsi: 'Kuih talam dua lapisan: lapisan bawah pulut gurih dan lapisan atas kastard pandan hijau lembut berasaskan ekstrak daun pandan asli.',
+        Dicipta_Oleh: 'pm.masakan@kemas.gov.my'
+      },
+      {
+        ID_Resepi: 'RSP-DRAFT-006',
+        Nama_Resepi: 'Gulai Kawah Daging Utara Bersama Umbut Pisang',
+        Kategori_Masakan: 'Tradisional Warisan',
+        Etnik_Kaum: 'Melayu',
+        Negeri_Asal: 'Perlis',
+        Jenis_Hidangan: 'Lauk Utama',
+        Tahap_Kesukaran: 'Sukar',
+        Masa_Penyediaan_Minit: 35,
+        Masa_Memasak_Minit: 75,
+        Bilangan_Hidangan: 10,
+        Status: 'Draf',
+        Gambar_Utama: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&q=80&w=800',
+        Deskripsi: 'Resepi gulai kawah katering kenduri warisan utara. Daging lembu pejal dimasak perlahan bersama umbut pisang segar.',
+        Dicipta_Oleh: 'pm.masakan@kemas.gov.my'
+      }
+    ],
+    bahanList: [
+      { ID_Bahan: 'BHN-001', ID_Resepi: 'RSP-PERLIS-001', Kumpulan_Bahan: 'Bahan Utama', Nama_Bahan: 'Daging lembu pejal (dihiris tebal)', Kuantiti: '1', Unit: 'kg', Turutan: 1 },
+      { ID_Bahan: 'BHN-002', ID_Resepi: 'RSP-PERLIS-001', Kumpulan_Bahan: 'Bahan Utama', Nama_Bahan: 'Santan pekat segar', Kuantiti: '500', Unit: 'ml', Turutan: 2 },
+      { ID_Bahan: 'BHN-003', ID_Resepi: 'RSP-PERLIS-001', Kumpulan_Bahan: 'Bahan Utama', Nama_Bahan: 'Kerisik sangai wangi', Kuantiti: '4', Unit: 'sudu besar', Turutan: 3 },
+      { ID_Bahan: 'BHN-004', ID_Resepi: 'RSP-PERLIS-001', Kumpulan_Bahan: 'Bahan Kisar', Nama_Bahan: 'Bawang merah kecil & Bawang putih', Kuantiti: '12', Unit: 'ulas', Turutan: 4 },
+      { ID_Bahan: 'BHN-005', ID_Resepi: 'RSP-PERLIS-001', Kumpulan_Bahan: 'Bahan Kisar', Nama_Bahan: 'Serai segar, Lengkuas, Halia', Kuantiti: '4', Unit: 'batang', Turutan: 5 },
+      { ID_Bahan: 'BHN-010', ID_Resepi: 'RSP-PERLIS-002', Kumpulan_Bahan: 'Bahan Kuah', Nama_Bahan: 'Ikan selayang / kembung rebus', Kuantiti: '1', Unit: 'kg', Turutan: 1 },
+      { ID_Bahan: 'BHN-011', ID_Resepi: 'RSP-PERLIS-002', Kumpulan_Bahan: 'Bahan Kuah', Nama_Bahan: 'Asam keping & Asam jawa', Kuantiti: '6', Unit: 'keping', Turutan: 2 },
+      { ID_Bahan: 'BHN-012', ID_Resepi: 'RSP-PERLIS-002', Kumpulan_Bahan: 'Ulaman & Hidangan', Nama_Bahan: 'Laksa beras segar', Kuantiti: '1', Unit: 'kg', Turutan: 3 },
+      { ID_Bahan: 'BHN-020', ID_Resepi: 'RSP-PERLIS-004', Kumpulan_Bahan: 'Bahan Pulut', Nama_Bahan: 'Beras pulut susu (rendam 3 jam)', Kuantiti: '500', Unit: 'gram', Turutan: 1 },
+      { ID_Bahan: 'BHN-021', ID_Resepi: 'RSP-PERLIS-004', Kumpulan_Bahan: 'Bahan Santan', Nama_Bahan: 'Santan kelapa segar & Garam halus', Kuantiti: '300', Unit: 'ml', Turutan: 2 },
+      { ID_Bahan: 'BHN-022', ID_Resepi: 'RSP-PERLIS-004', Kumpulan_Bahan: 'Buah Utama', Nama_Bahan: 'Mempelam Harum Manis Perlis (ranum)', Kuantiti: '3', Unit: 'biji', Turutan: 3 }
+    ],
+    langkahList: [
+      { ID_Langkah: 'LKG-001', ID_Resepi: 'RSP-PERLIS-001', Nombor_Langkah: 1, Tajuk_Langkah: 'Penyediaan Bahan & Kisar Rempah', Arahan: 'Kisar bawang merah, bawang putih, halia, lengkuas, serai, cili kering dan kunyit hidup dengan sedikit air.', Masa_Minit: 15 },
+      { ID_Langkah: 'LKG-002', ID_Resepi: 'RSP-PERLIS-001', Nombor_Langkah: 2, Tajuk_Langkah: 'Menumis Pes & Memasukkan Daging', Arahan: 'Panaskan minyak kelapa dalam kuali tebal. Tumis pes kisar sehingga terbit minyak wangi. Masukkan hirisan daging dan kacau rata.', Masa_Minit: 20 },
+      { ID_Langkah: 'LKG-003', ID_Resepi: 'RSP-PERLIS-001', Nombor_Langkah: 3, Tajuk_Langkah: 'Memasukkan Santan & Mereneh Perlahan', Arahan: 'Tuangkan santan pekat segar dan asam keping. Renihkan dengan api kecil sederhana selama 45-60 minit.', Masa_Minit: 45 },
+      { ID_Langkah: 'LKG-004', ID_Resepi: 'RSP-PERLIS-001', Nombor_Langkah: 4, Tajuk_Langkah: 'Menambah Kerisik & Daun Kunyit', Arahan: 'Masukkan kerisik sangai wangi, gula melaka, dan garam. Kacau berterusan sehingga kuah pekat legap dan berminyak berkilat.', Masa_Minit: 25 },
+      { ID_Langkah: 'LKG-010', ID_Resepi: 'RSP-PERLIS-002', Nombor_Langkah: 1, Tajuk_Langkah: 'Rebus Ikan & Kisar Kuah', Arahan: 'Rebus ikan kembung bersama asam keping. Asingkan isi ikan daripada tulang. Kisar isi ikan halus bersama sedikit air rebusan.', Masa_Minit: 25 },
+      { ID_Langkah: 'LKG-020', ID_Resepi: 'RSP-PERLIS-004', Nombor_Langkah: 1, Tajuk_Langkah: 'Mengukus Pulut', Arahan: 'Kukus beras pulut selama 20 minit. Angkat, gaulkan bersama santan pekat dan garam sehingga berkilat, kemudian kukus semula 10 minit.', Masa_Minit: 30 }
+    ],
+    users: [
+      { Emel: 'admin.pkk@kemas.gov.my', Nama: 'Ketua Unit PKK KEMAS Perlis', Role: 'Admin', Aktif: true },
+      { Emel: 'pm.masakan@kemas.gov.my', Pn: 'Pn. Azizah (Pemaju Masyarakat Masakan)', Role: 'Penyumbang', Aktif: true },
+      { Emel: 'staf.kemas@kemas.gov.my', Nama: 'En. Rosli (Peserta / Staf KEMAS)', Role: 'Pengguna', Aktif: true }
+    ],
+    masterData: {
+      Kategori_Masakan: [
+        { Nama: 'Tradisional Warisan', Aktif: true },
+        { Nama: 'Masakan Harian', Aktif: true },
+        { Nama: 'Kuih-Muih Tradisional', Aktif: true },
+        { Nama: 'Pencuci Mulut', Aktif: true },
+        { Nama: 'Panggang & BBQ', Aktif: true }
+      ],
+      Etnik_Kaum: [{ Nama: 'Melayu', Aktif: true }, { Nama: 'Siam / Thai Perlis', Aktif: true }],
+      Negeri_Asal: [{ Nama: 'Perlis', Aktif: true }, { Nama: 'Kedah', Aktif: true }],
+      Jenis_Hidangan: [{ Nama: 'Lauk Utama', Aktif: true }, { Nama: 'Pencuci Mulut / Dessert', Aktif: true }]
+    }
+  };
+
+  let appState = {
+    recipes: [],
+    bahanList: [],
+    langkahList: [],
+    users: [],
+    masterData: {
+      Kategori_Masakan: [],
+      Etnik_Kaum: [],
+      Negeri_Asal: [],
+      Jenis_Hidangan: []
+    },
+    currentTab: 'dashboard',
+    selectedRecipe: null,
+    editingRecipe: null,
+    filterCategory: 'Semua',
+    searchQuery: '',
+    activeMasterTable: 'Kategori_Masakan',
+    hasLoaded: false
+  };
+
+  let requestTimeoutHandle = null;
+
+  // Mulakan aplikasi apabila DOM siap dimuatkan
+  window.addEventListener('DOMContentLoaded', () => {
+    refreshDataFromSheet();
+  });
+
+  // Sistem Toast Pemberitahuan
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `p-3.5 rounded-xl shadow-2xl text-xs font-bold pointer-events-auto flex items-center justify-between transition-all animate-fade-in border ${
+      type === 'error'
+        ? 'bg-rose-950/90 border-rose-500/50 text-rose-200 shadow-rose-950/50'
+        : type === 'success'
+        ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-200 shadow-emerald-950/50'
+        : 'bg-amber-950/90 border-amber-500/50 text-amber-200 shadow-amber-950/50'
+    }`;
+
+    toast.innerHTML = `
+      <div class="flex items-center gap-2">
+        <span>${type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'}</span>
+        <span>${escapeHtml(message)}</span>
+      </div>
+      <button onclick="this.parentElement.remove()" class="ml-3 text-zinc-400 hover:text-zinc-100 font-bold cursor-pointer">&times;</button>
+    `;
+
+    container.appendChild(toast);
+    setTimeout(() => {
+      if (toast.parentElement) toast.remove();
+    }, 4500);
+  }
+
+  // Fungsi selamat untuk sembunyikan spinner & paparkan kandungan
+  function hideSpinnerAndShowContent() {
+    const spinner = document.getElementById('loading-spinner');
+    const viewArea = document.getElementById('view-area');
+    
+    if (spinner) {
+      spinner.style.setProperty('display', 'none', 'important');
+      spinner.classList.add('hidden', 'is-hidden');
+    }
+    if (viewArea) {
+      viewArea.style.removeProperty('display');
+      viewArea.style.display = 'block';
+      viewArea.classList.remove('hidden');
+      viewArea.classList.add('is-visible');
+    }
+  }
+
+  function showSpinner() {
+    const spinner = document.getElementById('loading-spinner');
+    const viewArea = document.getElementById('view-area');
+    
+    if (spinner) {
+      spinner.style.removeProperty('display');
+      spinner.style.display = 'flex';
+      spinner.classList.remove('hidden', 'is-hidden');
+    }
+    if (viewArea) {
+      viewArea.style.display = 'none';
+      viewArea.classList.add('hidden');
+      viewArea.classList.remove('is-visible');
+    }
+  }
+
+  // Muat semakan data daripada pelayan Apps Script
+  function refreshDataFromSheet() {
+    showSpinner();
+    appState.hasLoaded = false;
+
+    if (requestTimeoutHandle) {
+      clearTimeout(requestTimeoutHandle);
+    }
+
+    // Fail-Safe: Selepas 6 saat jika GAS tidak menjawab, buka data fallback secara automatik
+    requestTimeoutHandle = setTimeout(() => {
+      if (!appState.hasLoaded) {
+        console.warn("Masa respon Google Apps Script melebihi 6 saat. Memuatkan data tempatan KEMAS Perlis...");
+        forceLoadLocalData("Sambungan ke pelayan mengambil masa. Data paparan KEMAS Perlis sedia digunakan.");
+      }
+    }, 6000);
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(onDataLoaded)
+        .withFailureHandler(onDataError)
+        .apiGetAllData();
+    } else {
+      setTimeout(() => {
+        forceLoadLocalData();
+      }, 500);
+    }
+  }
+
+  function onDataLoaded(res) {
+    appState.hasLoaded = true;
+    if (requestTimeoutHandle) clearTimeout(requestTimeoutHandle);
+
+    hideSpinnerAndShowContent();
+
+    if (!res || !res.success) {
+      const errMsg = res && res.error ? res.error : "Gagal memuatkan data dari Google Sheet.";
+      showToast(errMsg, 'error');
+      applyDataToState(SAMPLE_KEMAS_DATA);
+      renderCurrentTab();
+      return;
+    }
+
+    if (!res.recipes || res.recipes.length === 0) {
+      applyDataToState(SAMPLE_KEMAS_DATA);
+      showToast("Pangkalan data baharu dikesan. Memaparkan data permulaan KEMAS Perlis.", 'info');
+    } else {
+      applyDataToState(res);
+      showToast("Pangkalan data Google Sheet berjaya disegerakkan!", 'success');
+    }
+
+    if (res.note) {
+      showToast(res.note, 'info');
+    }
+
+    renderCurrentTab();
+  }
+
+  function onDataError(err) {
+    appState.hasLoaded = true;
+    if (requestTimeoutHandle) clearTimeout(requestTimeoutHandle);
+
+    hideSpinnerAndShowContent();
+
+    const msg = err && err.message ? err.message : String(err);
+    showToast("Ralat Sambungan GAS: " + msg, 'error');
+
+    applyDataToState(SAMPLE_KEMAS_DATA);
+    renderCurrentTab();
+  }
+
+  function applyDataToState(data) {
+    appState.recipes = data.recipes || [];
+    appState.bahanList = data.bahanList || [];
+    appState.langkahList = data.langkahList || [];
+    appState.users = data.users || [];
+    if (data.masterData) appState.masterData = data.masterData;
+  }
+
+  function forceLoadLocalData(customMsg) {
+    appState.hasLoaded = true;
+    if (requestTimeoutHandle) clearTimeout(requestTimeoutHandle);
+
+    hideSpinnerAndShowContent();
+    applyDataToState(SAMPLE_KEMAS_DATA);
+    renderCurrentTab();
+
+    const statusText = document.getElementById('status-text');
+    if (statusText) statusText.textContent = "Data KEMAS Aktif";
+
+    showToast(customMsg || "Data Dapur KEMAS Perlis berjaya dimuatkan!", 'info');
+  }
+
+  function switchTab(tabName) {
+    appState.currentTab = tabName;
+    appState.selectedRecipe = null;
+
+    ['dashboard', 'recipes', 'add', 'settings'].forEach(t => {
+      const btn = document.getElementById('nav-' + t);
+      if (btn) {
+        if (t === tabName) {
+          btn.className = "flex flex-col items-center py-1 px-3 text-amber-400 font-bold transition-colors cursor-pointer";
+        } else {
+          btn.className = "flex flex-col items-center py-1 px-3 text-zinc-400 hover:text-amber-400 font-medium transition-colors cursor-pointer";
+        }
+      }
+    });
+
+    renderCurrentTab();
+  }
+
+  function setRecipeFilter(cat) {
+    appState.filterCategory = cat;
+    renderCurrentTab();
+  }
+
+  function setRecipeSearch(query) {
+    appState.searchQuery = query.toLowerCase();
+    renderCurrentTab();
+  }
+
+  // Pembantu imej pintar supaya resepi tidak semuanya berkongsi satu gambar mangkuk yang sama
+  function getSmartRecipeImage(r) {
+    if (!r) return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800';
+    if (r.Gambar_Utama && !r.Gambar_Utama.includes('photo-1546069901-ba9599a7e63c')) {
+      return r.Gambar_Utama;
+    }
+    const name = (r.Nama_Resepi || '').toLowerCase();
+    if (name.includes('rendang')) return 'https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&q=80&w=800';
+    if (name.includes('laksa')) return 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&q=80&w=800';
+    if (name.includes('bakar') || name.includes('ikan')) return 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&q=80&w=800';
+    if (name.includes('pulut') || name.includes('mempelam') || name.includes('panggang')) return 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=800';
+    if (name.includes('kuih') || name.includes('seri muka')) return 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800';
+    if (name.includes('gulai') || name.includes('kawah') || name.includes('daging')) return 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&q=80&w=800';
+    return 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800';
+  }
+
+  function renderCurrentTab() {
+    const viewArea = document.getElementById('view-area');
+    if (!viewArea) return;
+
+    if (appState.currentTab === 'dashboard') {
+      const published = appState.recipes.filter(r => r.Status === 'Diterbitkan');
+      const drafts = appState.recipes.filter(r => r.Status === 'Draf');
+
+      // Ambil 5 atau 6 resepi terkini
+      const recentRecipes = [...published].slice(0, 6);
+
+      viewArea.innerHTML = `
+        <div class="space-y-6 pb-20 animate-fade-in">
+          <!-- Hero Welcome Banner (Menyamai 100% React App) -->
+          <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-zinc-900 via-[#121212] to-zinc-950 text-zinc-100 p-6 sm:p-8 shadow-2xl border border-zinc-800">
+            <div class="relative z-10 max-w-2xl space-y-3">
+              <div class="inline-flex items-center space-x-2 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs font-semibold px-3 py-1 rounded-full">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 mr-1 inline"></i>
+                <span>Unit PKK KEMAS Negeri Perlis</span>
+              </div>
+
+              <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-100 leading-snug">
+                Sistem Resepi Masakan Digital Warisan Malaysia & Asia
+              </h2>
+
+              <p class="text-zinc-400 text-xs sm:text-sm leading-relaxed">
+                Platform rasmi pendigitalan koleksi masakan tradisional warisan KEMAS Perlis.
+                Cari, simpan, dan muat turun PDF Cookbook berformat profesional secara percuma.
+              </p>
+
+              <div class="pt-2 flex flex-wrap gap-3">
+                <button
+                  onclick="switchTab('recipes')"
+                  class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2 rounded-md shadow-lg shadow-indigo-900/20 text-xs sm:text-sm flex items-center space-x-2 transition-all active:scale-95 cursor-pointer"
+                >
+                  <i data-lucide="book-open" class="w-4 h-4 mr-1.5 inline"></i>
+                  <span>Jelajah Senarai Resepi</span>
+                </button>
+
+                <button
+                  onclick="switchTab('add')"
+                  class="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 font-medium px-4 py-2 rounded-md text-xs sm:text-sm flex items-center space-x-2 transition-all cursor-pointer"
+                >
+                  <i data-lucide="plus-circle" class="w-4 h-4 mr-1.5 inline"></i>
+                  <span>Tambah Resepi Baharu</span>
+                </button>
+
+                ${drafts.length > 0 ? `
+                  <button
+                    onclick="switchTab('settings')"
+                    class="bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 font-medium px-4 py-2 rounded-md text-xs sm:text-sm flex items-center space-x-2 shadow-md border border-amber-500/30 animate-pulse cursor-pointer"
+                  >
+                    <i data-lucide="shield-alert" class="w-4 h-4 mr-1.5 inline text-amber-400"></i>
+                    <span>${drafts.length} Resepi Draf Memerlukan Semakan</span>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Hiasan Api Latar Belakang -->
+            <div class="absolute -right-10 -bottom-10 opacity-5 pointer-events-none text-indigo-400">
+              <i data-lucide="flame" class="w-72 h-72"></i>
+            </div>
+          </div>
+
+          <!-- 4 Metric Cards Grid (Menyamai 100% React App) -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <div class="bg-[#121212] p-4 rounded-xl border border-zinc-800 shadow-sm flex items-center space-x-3">
+              <div class="p-2.5 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <i data-lucide="book-open" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="text-2xl sm:text-3xl font-light tracking-tighter text-zinc-100">
+                  ${published.length}
+                </div>
+                <div class="text-[11px] text-zinc-400 font-medium">
+                  Resepi Diterbitkan
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-[#121212] p-4 rounded-xl border border-zinc-800 shadow-sm flex items-center space-x-3">
+              <div class="p-2.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <i data-lucide="folder-heart" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="text-2xl sm:text-3xl font-light tracking-tighter text-zinc-100">
+                  ${appState.masterData && appState.masterData.Kategori_Masakan ? appState.masterData.Kategori_Masakan.length : 5}
+                </div>
+                <div class="text-[11px] text-zinc-400 font-medium">
+                  Kategori Active
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-[#121212] p-4 rounded-xl border border-zinc-800 shadow-sm flex items-center space-x-3">
+              <div class="p-2.5 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                <i data-lucide="award" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="text-2xl sm:text-3xl font-light tracking-tighter text-zinc-100">
+                  ${appState.masterData && appState.masterData.Negeri_Asal ? appState.masterData.Negeri_Asal.length : 11}
+                </div>
+                <div class="text-[11px] text-zinc-400 font-medium">
+                  Negeri/Etnik
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-[#121212] p-4 rounded-xl border border-zinc-800 shadow-sm flex items-center space-x-3">
+              <div class="p-2.5 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                <i data-lucide="clock" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="text-2xl sm:text-3xl font-light tracking-tighter text-zinc-100">
+                  ${drafts.length}
+                </div>
+                <div class="text-[11px] text-zinc-400 font-medium">
+                  Resepi Draf
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deck View: Resepi Terkini (Menyamai 100% React App) -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-lg font-bold text-zinc-100 flex items-center gap-2">
+                  <i data-lucide="flame" class="w-5 h-5 text-amber-400"></i>
+                  <span>Resepi Terkini (Deck View)</span>
+                </h3>
+                <p class="text-xs text-zinc-400">
+                  Masakan warisan terbaharu diterbitkan oleh Unit PKK KEMAS
+                </p>
+              </div>
+              <button
+                onclick="switchTab('recipes')"
+                class="text-xs text-indigo-400 font-medium hover:underline flex items-center gap-0.5 cursor-pointer"
+              >
+                <span>Lihat Semua</span> &rarr;
+              </button>
+            </div>
+
+            ${recentRecipes.length === 0 ? `
+              <div class="bg-[#121212] border border-zinc-800 rounded-2xl p-8 text-center space-y-3">
+                <p class="text-zinc-400 text-sm">Tiada resepi dijumpai dalam pangkalan data.</p>
+                <button onclick="triggerGASSetup()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md cursor-pointer">
+                  Jalankan Setup & Benihkan Resepi KEMAS
+                </button>
+              </div>
+            ` : `
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                ${recentRecipes.map(r => {
+                  const img = getSmartRecipeImage(r);
+                  const totalTime = (Number(r.Masa_Penyediaan_Minit) || 15) + (Number(r.Masa_Memasak_Minit) || 30);
+                  const difficulty = r.Tahap_Kesukaran || 'Sederhana';
+                  return `
+                    <div
+                      onclick="viewRecipeDetail('${escapeJsString(r.ID_Resepi)}')"
+                      class="bg-[#121212] rounded-xl border border-zinc-800 hover:border-zinc-700 shadow-sm transition-all cursor-pointer overflow-hidden group flex flex-col justify-between"
+                    >
+                      <div>
+                        <div class="relative h-40 overflow-hidden bg-zinc-900">
+                          <img
+                            src="${img}"
+                            alt="${escapeHtml(r.Nama_Resepi)}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100"
+                          />
+                          <div class="absolute top-2 left-2 flex gap-1">
+                            <span class="bg-indigo-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">
+                              ${escapeHtml(r.Kategori_Masakan || 'Tradisional Warisan')}
+                            </span>
+                            <span class="bg-amber-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-sm">
+                              ${escapeHtml(r.Negeri_Asal || 'Perlis')}
+                            </span>
+                          </div>
+
+                          <span
+                            class="absolute bottom-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                              difficulty === 'Mudah'
+                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                : difficulty === 'Sederhana'
+                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                            }"
+                          >
+                            ${difficulty}
+                          </span>
+                        </div>
+
+                        <div class="p-3.5 space-y-1.5">
+                          <h4 class="font-bold text-zinc-100 text-sm group-hover:text-indigo-400 transition-colors line-clamp-1">
+                            ${escapeHtml(r.Nama_Resepi)}
+                          </h4>
+                          <p class="text-zinc-400 text-xs line-clamp-2 leading-relaxed">
+                            ${escapeHtml(r.Deskripsi || 'Resepi warisan kulinari kebanggaan KEMAS.')}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="px-3.5 py-2.5 bg-[#1a1a1a] border-t border-zinc-800/80 flex items-center justify-between text-zinc-400 text-[11px]">
+                        <div class="flex items-center space-x-1">
+                          <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400 inline mr-1"></i>
+                          <span>${totalTime} minit</span>
+                        </div>
+                        <span class="text-indigo-400 font-medium text-[11px] group-hover:underline flex items-center gap-0.5">
+                          Buka Resepi &rarr;
+                        </span>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    } else if (appState.currentTab === 'recipes') {
+      const categories = ['Semua', 'Tradisional Warisan', 'Masakan Harian', 'Kuih-Muih Tradisional', 'Panggang & BBQ', 'Pencuci Mulut'];
+      
+      let filtered = appState.recipes;
+      if (appState.filterCategory && appState.filterCategory !== 'Semua') {
+        filtered = filtered.filter(r => r.Kategori_Masakan === appState.filterCategory);
+      }
+      if (appState.searchQuery) {
+        filtered = filtered.filter(r => 
+          (r.Nama_Resepi && r.Nama_Resepi.toLowerCase().includes(appState.searchQuery)) ||
+          (r.Kategori_Masakan && r.Kategori_Masakan.toLowerCase().includes(appState.searchQuery)) ||
+          (r.Deskripsi && r.Deskripsi.toLowerCase().includes(appState.searchQuery))
+        );
+      }
+
+      viewArea.innerHTML = `
+        <div class="space-y-5 animate-fade-in">
+          <!-- Header and Search -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-xl font-bold text-amber-400">Koleksi Resepi Warisan (${filtered.length})</h2>
+              <p class="text-xs text-zinc-400 mt-0.5">Semak resepi tradisional KEMAS Negeri Perlis dan muat turun PDF terus.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <input 
+                type="text" 
+                placeholder="Cari resepi, ramuan..." 
+                value="${escapeHtml(appState.searchQuery)}"
+                oninput="setRecipeSearch(this.value)" 
+                class="px-3 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-xs text-zinc-100 focus:outline-none focus:border-amber-500 w-full sm:w-60"
+              />
+              <button onclick="switchTab('add')" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-bold flex items-center gap-1.5 shrink-0 cursor-pointer">
+                <i data-lucide="plus" class="w-4 h-4"></i> Tambah
+              </button>
+            </div>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+            ${categories.map(cat => `
+              <button 
+                onclick="setRecipeFilter('${cat}')" 
+                class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                  appState.filterCategory === cat 
+                    ? 'bg-amber-500 text-zinc-950 shadow-md shadow-amber-900/30' 
+                    : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
+                }"
+              >
+                ${cat}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Recipe List -->
+          ${filtered.length === 0 ? `
+            <div class="p-8 bg-zinc-900 rounded-2xl border border-zinc-800 text-center">
+              <p class="text-zinc-400 text-xs">Tiada resepi sepadan dengan carian atau penapis kategori ini.</p>
+              <button onclick="setRecipeFilter('Semua'); setRecipeSearch('');" class="mt-3 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs rounded-xl font-bold cursor-pointer">
+                Set Semula Penapis
+              </button>
+            </div>
+          ` : `
+            <div class="grid grid-cols-1 gap-3">
+              ${filtered.map(r => `
+                <div onclick="viewRecipeDetail('${escapeJsString(r.ID_Resepi)}')" class="bg-zinc-900 p-4 rounded-xl border border-zinc-800 hover:border-amber-500/40 cursor-pointer flex items-center justify-between transition-all">
+                  <div class="flex items-center gap-3.5">
+                    <img src="${getSmartRecipeImage(r)}" class="w-14 h-14 rounded-xl object-cover bg-zinc-950 shrink-0" />
+                    <div>
+                      <h4 class="font-bold text-zinc-100 text-sm">${escapeHtml(r.Nama_Resepi)}</h4>
+                      <p class="text-xs text-zinc-400 mt-0.5">${escapeHtml(r.Kategori_Masakan)} • ${escapeHtml(r.Jenis_Hidangan || 'Lauk Utama')} • ⏱️ ${r.Masa_Memasak_Minit || 30} m</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs px-2.5 py-1 rounded-lg ${r.Status === 'Diterbitkan' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'} font-bold">
+                      ${r.Status}
+                    </span>
+                    <button onclick="event.stopPropagation(); viewRecipeDetail('${escapeJsString(r.ID_Resepi)}')" class="text-xs px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors">
+                      Buka Resepi
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    } else if (appState.currentTab === 'add') {
+      viewArea.innerHTML = `
+        <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl max-w-2xl mx-auto space-y-4 animate-fade-in">
+          <div class="border-b border-zinc-800 pb-3">
+            <h2 class="text-xl font-bold text-amber-400">Tambah Resepi Baharu</h2>
+            <p class="text-xs text-zinc-400 mt-1">Daftarkan resepi warisan baharu ke dalam Pangkalan Data Google Sheet KEMAS Perlis.</p>
+          </div>
+          <form onsubmit="handleSaveRecipeSubmit(event)" class="space-y-4 text-xs">
+            <div>
+              <label class="block font-bold text-zinc-300 mb-1">Nama Resepi *</label>
+              <input type="text" id="form-nama" required placeholder="Contoh: Gulai Ikan Bawal Emas Perlis" class="w-full p-2.5 bg-zinc-950 text-zinc-100 border border-zinc-800 rounded-xl focus:outline-none focus:border-amber-500">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-zinc-300 mb-1">Kategori Masakan *</label>
+                <select id="form-kategori" class="w-full p-2.5 bg-zinc-950 text-zinc-100 border border-zinc-800 rounded-xl">
+                  <option value="Tradisional Warisan">Tradisional Warisan</option>
+                  <option value="Masakan Harian">Masakan Harian</option>
+                  <option value="Kuih-Muih Tradisional">Kuih-Muih Tradisional</option>
+                  <option value="Panggang & BBQ">Panggang & BBQ</option>
+                  <option value="Pencuci Mulut">Pencuci Mulut</option>
+                  <option value="Minuman & Sarapan">Minuman & Sarapan</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-zinc-300 mb-1">Masa Memasak (Minit)</label>
+                <input type="number" id="form-masa" value="30" class="w-full p-2.5 bg-zinc-950 text-zinc-100 border border-zinc-800 rounded-xl">
+              </div>
+            </div>
+            <div>
+              <label class="block font-bold text-zinc-300 mb-1">Deskripsi / Ringkasan</label>
+              <textarea id="form-deskripsi" rows="3" placeholder="Penerangan ringkas keistimewaan resepi..." class="w-full p-2.5 bg-zinc-950 text-zinc-100 border border-zinc-800 rounded-xl"></textarea>
+            </div>
+            <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold rounded-xl text-sm transition-all shadow-lg cursor-pointer">
+              Simpan Resepi Ke Google Sheet
+            </button>
+          </form>
+        </div>
+      `;
+    } else if (appState.currentTab === 'settings') {
+      const drafts = appState.recipes.filter(r => r.Status === 'Draf');
+
+      viewArea.innerHTML = `
+        <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl space-y-6 animate-fade-in max-w-3xl mx-auto">
+          <div>
+            <h2 class="text-xl font-bold text-amber-400">Pentadbiran Dapur KEMAS & Google Sheet Integration</h2>
+            <p class="text-sm text-zinc-300 mt-1">Pengurusan Kelulusan Draf Resepi, Pangkalan Data & Akses Staf KEMAS Perlis.</p>
+          </div>
+
+          <!-- Kelulusan Draf -->
+          <div class="bg-zinc-950 p-4 rounded-xl border border-zinc-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="font-bold text-zinc-200 text-sm">Kelulusan Resepi Draf (${drafts.length})</h3>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Semakan Pentadbir</span>
+            </div>
+            ${drafts.length === 0 ? `
+              <p class="text-xs text-zinc-500">Tiada resepi draf menunggu kelulusan saat ini.</p>
+            ` : `
+              <div class="space-y-2">
+                ${drafts.map(d => `
+                  <div class="p-3 bg-zinc-900 rounded-lg border border-zinc-800 flex items-center justify-between">
+                    <div>
+                      <h4 class="font-bold text-zinc-100 text-xs">${escapeHtml(d.Nama_Resepi)}</h4>
+                      <p class="text-[11px] text-zinc-400">Dicipta oleh: ${escapeHtml(d.Dicipta_Oleh || 'Staf')}</p>
+                    </div>
+                    <button onclick="approveDraftRecipe('${escapeJsString(d.ID_Resepi)}')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md cursor-pointer">
+                      Lulus & Terbitkan
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+
+          <!-- Automasi Setup -->
+          <div class="p-4 bg-zinc-950 rounded-xl border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h4 class="font-bold text-zinc-200 text-xs">Pemasangan Automatik Pangkalan Data</h4>
+              <p class="text-[11px] text-zinc-400 mt-0.5">Jalankan setupDatabaseSheets() untuk memastikan 8 lembaran kerja & data resepi warisan wujud.</p>
+            </div>
+            <button onclick="triggerGASSetup()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shrink-0 cursor-pointer">
+              Jalankan Setup Sheet
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  // Pengurusan Checkbox Bahan Resepi
+  let checkedBahanMap = {};
+
+  function toggleIngredientCheck(bId) {
+    checkedBahanMap[bId] = !checkedBahanMap[bId];
+    const el = document.getElementById('bahan-item-' + bId);
+    const icon = document.getElementById('bahan-icon-' + bId);
+    if (el && icon) {
+      if (checkedBahanMap[bId]) {
+        el.className = "p-2 rounded-lg border text-xs cursor-pointer flex items-center justify-between transition-all bg-indigo-500/10 border-indigo-500/30 text-zinc-500 line-through";
+        icon.className = "w-4 h-4 text-indigo-400 shrink-0";
+      } else {
+        el.className = "p-2 rounded-lg border text-xs cursor-pointer flex items-center justify-between transition-all bg-[#1a1a1a] border-zinc-800 hover:border-zinc-700 text-zinc-200";
+        icon.className = "w-4 h-4 text-zinc-600 shrink-0";
+      }
+    }
+  }
+
+  // Paparan Perincian Resepi Penuh (Menyamai 100% Antaramuka Asli Dapur KEMAS)
+  function viewRecipeDetail(recipeId) {
+    const r = appState.recipes.find(item => item.ID_Resepi === recipeId);
+    if (!r) return;
+
+    const bList = appState.bahanList.filter(b => b.ID_Resepi === recipeId);
+    const lList = appState.langkahList.filter(l => l.ID_Resepi === recipeId).sort((a,b) => (a.Nombor_Langkah || 0) - (b.Nombor_Langkah || 0));
+
+    // Kumpulan bahan
+    const groupedBahan = {};
+    bList.forEach(item => {
+      const g = item.Kumpulan_Bahan || 'Bahan Utama';
+      if (!groupedBahan[g]) groupedBahan[g] = [];
+      groupedBahan[g].push(item);
+    });
+
+    const prepTime = Number(r.Masa_Penyediaan_Minit) || 20;
+    const cookTime = Number(r.Masa_Memasak_Minit) || 30;
+    const totalTime = prepTime + cookTime;
+    const servings = r.Bilangan_Hidangan || 4;
+
+    let modalEl = document.getElementById('recipe-modal');
+    if (!modalEl) {
+      modalEl = document.createElement('div');
+      modalEl.id = 'recipe-modal';
+      document.body.appendChild(modalEl);
+    }
+
+    modalEl.className = "fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto animate-fade-in";
+    modalEl.innerHTML = `
+      <div class="bg-[#121212] border border-zinc-800 rounded-2xl max-w-3xl w-full max-h-[92vh] overflow-hidden shadow-2xl flex flex-col my-auto">
+        
+        <!-- Modal Top Toolbar -->
+        <div class="bg-[#0f0f0f] border-b border-zinc-800 text-zinc-100 px-4 py-3 flex items-center justify-between shrink-0 no-print">
+          <div class="flex flex-wrap items-center gap-2">
+            <i data-lucide="utensils" class="w-5 h-5 text-indigo-400"></i>
+            <span class="font-bold text-xs sm:text-sm text-zinc-100">Butiran Resepi Warisan</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${
+              r.Status === 'Diterbitkan'
+                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+            }">
+              ${escapeHtml(r.Status)}
+            </span>
+
+            <button onclick="openPdfCookbookModal('${escapeJsString(r.ID_Resepi)}')" class="text-[11px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 border bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border-emerald-500/40 shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer" title="Jana & Papar PDF Cookbook">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>Jana PDF</span>
+            </button>
+          </div>
+
+          <button onclick="document.getElementById('recipe-modal').remove()" class="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Scrollable Modal Content -->
+        <div class="printable-document p-4 sm:p-6 overflow-y-auto space-y-6 text-zinc-100">
+          
+          <!-- Hero Image & Header Badges -->
+          <div class="relative h-60 sm:h-72 rounded-2xl overflow-hidden bg-[#1a1a1a] shadow-sm border border-zinc-800">
+            <img src="${getSmartRecipeImage(r)}" alt="${escapeHtml(r.Nama_Resepi)}" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/40 to-transparent"></div>
+
+            <div class="absolute bottom-4 left-4 right-4 text-white space-y-2">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="bg-indigo-600/90 backdrop-blur-md text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow">
+                  ${escapeHtml(r.Kategori_Masakan)}
+                </span>
+                <span class="bg-amber-600/90 backdrop-blur-md text-white text-xs font-bold px-2.5 py-0.5 rounded-full shadow">
+                  ${escapeHtml(r.Negeri_Asal || 'Perlis')}
+                </span>
+                ${r.Etnik_Kaum ? `
+                  <span class="bg-zinc-800/90 backdrop-blur-md text-zinc-200 text-xs font-bold px-2.5 py-0.5 rounded-full shadow border border-zinc-700">
+                    Etnik ${escapeHtml(r.Etnik_Kaum)}
+                  </span>
+                ` : ''}
+              </div>
+
+              <h2 class="text-xl sm:text-2xl font-black text-zinc-100 leading-tight drop-shadow-md">
+                ${escapeHtml(r.Nama_Resepi)}
+              </h2>
+            </div>
+          </div>
+
+          <!-- Status Banner if Draft -->
+          ${r.Status === 'Draf' ? `
+            <div class="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl flex items-center justify-between text-amber-300">
+              <div class="text-xs">
+                <strong class="block font-bold">Resepi Ini Dalam Status Draf</strong>
+                <span class="text-[11px] text-amber-400/80">Dicipta oleh: ${escapeHtml(r.Dicipta_Oleh || 'Staf KEMAS')}</span>
+              </div>
+              <button onclick="approveDraftRecipe('${escapeJsString(r.ID_Resepi)}')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs shadow transition-all cursor-pointer">
+                Luluskan & Terbitkan
+              </button>
+            </div>
+          ` : ''}
+
+          <!-- 4-Metrics Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#1a1a1a] p-3 rounded-xl border border-zinc-800/80 text-center text-xs">
+            <div>
+              <span class="text-zinc-400 text-[10px] block">Penyediaan</span>
+              <strong class="text-zinc-200 text-sm">${prepTime} min</strong>
+            </div>
+            <div>
+              <span class="text-zinc-400 text-[10px] block">Memasak</span>
+              <strong class="text-zinc-200 text-sm">${cookTime} min</strong>
+            </div>
+            <div>
+              <span class="text-zinc-400 text-[10px] block">Jumlah Masa</span>
+              <strong class="text-indigo-400 text-sm font-black">${totalTime} min</strong>
+            </div>
+            <div>
+              <span class="text-zinc-400 text-[10px] block">Bil. Hidangan</span>
+              <strong class="text-zinc-200 text-sm">${servings} orang</strong>
+            </div>
+          </div>
+
+          <!-- Description Section -->
+          ${r.Deskripsi ? `
+            <div class="space-y-1">
+              <h3 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Pengenalan Masakan</h3>
+              <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed bg-[#1a1a1a] p-3 rounded-xl border border-zinc-800 italic">
+                "${escapeHtml(r.Deskripsi)}"
+              </p>
+            </div>
+          ` : ''}
+
+          <!-- Ingredients Section Grouped with Interactive Checkbox -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
+              <h3 class="text-sm font-bold text-zinc-100 flex items-center gap-1.5">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                Bahan-Bahan Ramuan (${bList.length})
+              </h3>
+              <span class="text-[11px] text-zinc-400">Tandakan bahan yang telah disediakan</span>
+            </div>
+
+            ${Object.keys(groupedBahan).length === 0 ? `
+              <p class="text-xs text-zinc-500 italic">Tiada ramuan direkodkan.</p>
+            ` : Object.keys(groupedBahan).map(group => `
+              <div class="space-y-1">
+                <h4 class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">
+                  ${escapeHtml(group)}
+                </h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+                  ${groupedBahan[group].map(b => {
+                    const isDone = Boolean(checkedBahanMap[b.ID_Bahan]);
+                    return `
+                      <div 
+                        id="bahan-item-${escapeHtml(b.ID_Bahan)}"
+                        onclick="toggleIngredientCheck('${escapeJsString(b.ID_Bahan)}')" 
+                        class="p-2 rounded-lg border text-xs cursor-pointer flex items-center justify-between transition-all ${
+                          isDone 
+                            ? 'bg-indigo-500/10 border-indigo-500/30 text-zinc-500 line-through' 
+                            : 'bg-[#1a1a1a] border-zinc-800 hover:border-zinc-700 text-zinc-200'
+                        }"
+                      >
+                        <span class="flex items-center gap-2">
+                          <i data-lucide="check-circle-2" id="bahan-icon-${escapeHtml(b.ID_Bahan)}" class="w-4 h-4 ${isDone ? 'text-indigo-400' : 'text-zinc-600'} shrink-0"></i>
+                          <span>${escapeHtml(b.Nama_Bahan)}</span>
+                        </span>
+                        <span class="font-semibold text-zinc-100 whitespace-nowrap ml-2">
+                          ${escapeHtml(b.Kuantiti)} ${b.Unit && b.Unit !== 'secukup rasa' ? escapeHtml(b.Unit) : ''}
+                        </span>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Step-by-Step Instructions -->
+          <div class="space-y-3">
+            <h3 class="text-sm font-bold text-zinc-100 flex items-center gap-1.5 border-b border-zinc-800 pb-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-emerald-400"></i>
+              Langkah Penyediaan (${lList.length})
+            </h3>
+
+            ${lList.length === 0 ? `
+              <p class="text-xs text-zinc-500 italic">Tiada langkah penyediaan direkodkan.</p>
+            ` : `
+              <div class="space-y-2.5">
+                ${lList.map(l => `
+                  <div class="p-3.5 bg-[#1a1a1a] rounded-xl border border-zinc-800/80 text-xs space-y-1">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-amber-400">
+                        Langkah ${l.Nombor_Langkah}: ${escapeHtml(l.Tajuk_Langkah || '')}
+                      </span>
+                      ${l.Masa_Minit ? `<span class="text-[10px] text-zinc-500">⏱️ ${l.Masa_Minit} min</span>` : ''}
+                    </div>
+                    <p class="text-zinc-300 leading-relaxed">${escapeHtml(l.Arahan)}</p>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+
+          <!-- Modal Document Footer -->
+          <div class="pt-4 border-t border-zinc-800 text-[10px] text-zinc-500 text-center">
+            Dapur KEMAS • Unit PKK KEMAS Negeri Perlis • PDF Dijana Terus Tanpa Simpanan Google Drive
+          </div>
+        </div>
+      </div>
+    `;
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function handleSaveRecipeSubmit(e) {
+    e.preventDefault();
+    const nama = document.getElementById('form-nama').value;
+    const kategori = document.getElementById('form-kategori').value;
+    const masa = document.getElementById('form-masa').value;
+    const deskripsi = document.getElementById('form-deskripsi').value;
+
+    const payload = {
+      ID_Resepi: 'RSP-' + Date.now(),
+      Nama_Resepi: nama,
+      Kategori_Masakan: kategori,
+      Masa_Memasak_Minit: Number(masa) || 30,
+      Deskripsi: deskripsi,
+      Status: 'Draf'
+    };
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      showToast("Menyimpan resepi ke Google Sheet...", "info");
+      google.script.run
+        .withSuccessHandler((res) => {
+          showToast(res.message || "Resepi berjaya disimpan!", 'success');
+          refreshDataFromSheet();
+          switchTab('recipes');
+        })
+        .withFailureHandler((err) => {
+          showToast("Ralat menyimpan: " + err, 'error');
+        })
+        .apiSaveRecipe(payload, [], []);
+    } else {
+      appState.recipes.unshift(payload);
+      showToast("Resepi '" + nama + "' disimpan ke senarai tempatan!", 'success');
+      switchTab('recipes');
+    }
+  }
+
+  function approveDraftRecipe(recipeId) {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      showToast("Meluluskan resepi...", "info");
+      google.script.run
+        .withSuccessHandler((res) => {
+          showToast(res.message || "Resepi diluluskan & diterbitkan!", 'success');
+          refreshDataFromSheet();
+        })
+        .withFailureHandler((err) => {
+          showToast("Ralat kelulusan: " + err, 'error');
+        })
+        .apiApproveRecipe(recipeId);
+    } else {
+      const r = appState.recipes.find(x => x.ID_Resepi === recipeId);
+      if (r) r.Status = 'Diterbitkan';
+      showToast("Resepi " + recipeId + " diluluskan!", 'success');
+      renderCurrentTab();
+    }
+  }
+
+  function triggerGASSetup() {
+    showToast("Menjalankan setup database...", "info");
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler((res) => {
+          showToast(res.message || "Pangkalan data disiapkan!", 'success');
+          refreshDataFromSheet();
+        })
+        .withFailureHandler((err) => {
+          showToast("Ralat setup: " + err, 'error');
+        })
+        .setupDatabaseSheets();
+    } else {
+      showToast("Pemasangan simulasi diselesaikan!", 'info');
+      refreshDataFromSheet();
+    }
+  }
+
+  // Pembantu Sanitasi String
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function escapeJsString(str) {
+    if (!str) return '';
+    return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
+  }
+
+  // ==============================================================================
+  // MODAL PDF COOKBOOK 2 HALAMAN (Menyamai 100% Antaramuka React Dapur KEMAS)
+  // Menjamin 2 Muka Surat Lengkap: Seksyen 1 (Bahan) & Seksyen 2 (Langkah)
+  // ==============================================================================
+
+  function openPdfCookbookModal(recipeId) {
+    const r = appState.recipes.find(item => item.ID_Resepi === recipeId);
+    if (!r) return;
+
+    const bList = appState.bahanList.filter(b => b.ID_Resepi === recipeId);
+    const lList = appState.langkahList.filter(l => l.ID_Resepi === recipeId).sort((a,b) => (a.Nombor_Langkah || 0) - (b.Nombor_Langkah || 0));
+
+    const groupedBahan = {};
+    bList.forEach(item => {
+      const g = item.Kumpulan_Bahan || 'Bahan Utama';
+      if (!groupedBahan[g]) groupedBahan[g] = [];
+      groupedBahan[g].push(item);
+    });
+
+    const prepTime = Number(r.Masa_Penyediaan_Minit) || 20;
+    const cookTime = Number(r.Masa_Memasak_Minit) || 30;
+    const totalTime = prepTime + cookTime;
+    const servings = r.Bilangan_Hidangan || 4;
+
+    let pdfModal = document.getElementById('pdf-cookbook-modal');
+    if (!pdfModal) {
+      pdfModal = document.createElement('div');
+      pdfModal.id = 'pdf-cookbook-modal';
+      document.body.appendChild(pdfModal);
+    }
+
+    pdfModal.className = "fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto animate-fade-in";
+    pdfModal.innerHTML = `
+      <div class="bg-[#121212] rounded-2xl shadow-2xl max-w-4xl w-full my-auto overflow-hidden border border-zinc-800 flex flex-col max-h-[95vh]">
+        <!-- Top Toolbar Header -->
+        <div class="bg-[#0f0f0f] text-zinc-100 px-4 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 shrink-0">
+          <div class="flex items-center space-x-2.5">
+            <div class="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+              <i data-lucide="chef-hat" class="w-5 h-5 text-indigo-400"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-sm sm:text-base text-zinc-100 flex items-center gap-2">
+                <span>PDF Cookbook: Format 2 Seksyen</span>
+                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold px-2 py-0.5 rounded-full">
+                  2 Halaman Dijamin
+                </span>
+              </h3>
+              <p class="text-[11px] text-zinc-400 hidden sm:block">
+                Seksyen 1 (Halaman 1) • Seksyen 2 (Halaman 2)
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Jump Buttons (Seksyen 1 & 2) -->
+          <div class="hidden md:flex items-center gap-1.5 bg-zinc-900 p-1 rounded-xl border border-zinc-800 text-xs">
+            <button onclick="scrollPdfSection(1)" class="px-2.5 py-1 rounded-lg hover:bg-zinc-800 text-zinc-300 hover:text-white font-medium flex items-center gap-1 transition-colors cursor-pointer">
+              <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-400"></i>
+              <span>Seksyen 1 (Hlm 1)</span>
+            </button>
+            <div class="w-px h-3.5 bg-zinc-700"></div>
+            <button onclick="scrollPdfSection(2)" class="px-2.5 py-1 rounded-lg hover:bg-zinc-800 text-zinc-300 hover:text-white font-medium flex items-center gap-1 transition-colors cursor-pointer">
+              <i data-lucide="book-open" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>Seksyen 2 (Hlm 2)</span>
+            </button>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Action Button: Muat Turun PDF (2 Halaman) -->
+            <button 
+              id="gas-btn-download-pdf" 
+              onclick="downloadTwoPagePdf('${escapeJsString(r.ID_Resepi)}')"
+              class="font-bold px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow-md bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/30 cursor-pointer active:scale-95"
+              title="Jana dan muat turun fail PDF 2 halaman lengkap ke peranti"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>Muat Turun PDF (2 Halaman)</span>
+            </button>
+
+            <!-- Close Modal -->
+            <button onclick="closePdfCookbookModal()" class="p-2 rounded-xl hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Document View Container -->
+        <div id="gas-pdf-scroll-container" class="p-3 sm:p-8 overflow-y-auto bg-[#0a0a0a] flex flex-col items-center gap-6">
+          
+          <!-- SEKSYEN 1 (HALAMAN 1) -->
+          <div id="gas-pdf-page-1" class="bg-white w-full max-w-[210mm] p-6 sm:p-8 shadow-2xl rounded-2xl text-slate-800 font-sans border border-slate-200 flex flex-col justify-between" style="min-height: 270mm;">
+            <div class="space-y-3.5">
+              <!-- Document Header Branding -->
+              <div class="border-b-4 border-indigo-600 pb-2.5 flex justify-between items-end">
+                <div>
+                  <div class="flex items-center space-x-1.5 text-indigo-700 font-bold text-xs uppercase tracking-widest">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-500 inline mr-1"></i>
+                    <span>Jabatan Kemajuan Masyarakat (KEMAS) Perlis</span>
+                  </div>
+                  <h1 class="text-xl sm:text-2xl font-black text-slate-900 mt-0.5 tracking-tight">
+                    Koleksi Resepi Warisan Digital
+                  </h1>
+                  <p class="text-[11px] text-slate-500">
+                    Unit Pembangunan Komuniti & Pendidikan Kemahiran (PKK) • Dapur KEMAS
+                  </p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="inline-block bg-indigo-50 text-indigo-700 border border-indigo-200 font-black text-[11px] px-2.5 py-0.5 rounded uppercase tracking-wider">
+                    SEKSYEN 1 DARI 2
+                  </span>
+                  <div class="text-[10px] text-slate-500 mt-0.5 font-mono font-semibold">
+                    ID: ${escapeHtml(r.ID_Resepi)}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recipe Title & Badges -->
+              <div class="space-y-1.5">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="bg-indigo-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
+                    ${escapeHtml(r.Kategori_Masakan)}
+                  </span>
+                  ${r.Negeri_Asal ? `
+                    <span class="bg-amber-100 text-amber-800 border border-amber-300 text-[11px] font-bold px-2 py-0.5 rounded-full">
+                      ${escapeHtml(r.Negeri_Asal)}
+                    </span>
+                  ` : ''}
+                  ${r.Etnik_Kaum ? `
+                    <span class="bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-bold px-2 py-0.5 rounded-full">
+                      Etnik ${escapeHtml(r.Etnik_Kaum)}
+                    </span>
+                  ` : ''}
+                  <span class="bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-bold px-2 py-0.5 rounded-full ml-auto">
+                    Tahap: ${escapeHtml(r.Tahap_Kesukaran || 'Sederhana')}
+                  </span>
+                </div>
+
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 border-l-4 border-indigo-600 pl-3 leading-tight">
+                  ${escapeHtml(r.Nama_Resepi)}
+                </h2>
+
+                ${r.Deskripsi ? `
+                  <p class="text-xs text-slate-600 italic leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                    "${escapeHtml(r.Deskripsi)}"
+                  </p>
+                ` : ''}
+
+                <!-- Photo & Duration Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 bg-slate-50 p-2.5 rounded-xl border border-slate-200 items-center">
+                  <div class="md:col-span-1 h-32 rounded-lg overflow-hidden bg-slate-100 border border-slate-200 shadow-xs">
+                    <img src="${getSmartRecipeImage(r)}" alt="${escapeHtml(r.Nama_Resepi)}" class="w-full h-full object-cover" crossOrigin="anonymous" />
+                  </div>
+
+                  <div class="md:col-span-2 grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
+                      <span class="text-slate-500 block text-[10px] font-medium">⏱️ Masa Menyedia</span>
+                      <strong class="text-slate-800 text-xs sm:text-sm">${prepTime} minit</strong>
+                    </div>
+                    <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
+                      <span class="text-slate-500 block text-[10px] font-medium">⏱️ Masa Memasak</span>
+                      <strong class="text-slate-800 text-xs sm:text-sm">${cookTime} minit</strong>
+                    </div>
+                    <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
+                      <span class="text-slate-500 block text-[10px] font-medium">Jumlah Masa</span>
+                      <strong class="text-indigo-600 text-xs sm:text-sm">${totalTime} minit</strong>
+                    </div>
+                    <div class="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
+                      <span class="text-slate-500 block text-[10px] font-medium">👥 Bilangan Sajian</span>
+                      <strong class="text-slate-800 text-xs sm:text-sm">${servings} orang</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ingredients Section Grouped -->
+              <div class="space-y-1.5 pt-0.5">
+                <div class="flex items-center justify-between border-b-2 border-indigo-200 pb-1">
+                  <h3 class="text-xs sm:text-sm font-bold text-indigo-800 uppercase tracking-wide flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                    <span>Bahan-Bahan Ramuan (Lengkap)</span>
+                  </h3>
+                  <span class="text-[10px] text-slate-600 bg-indigo-50 font-semibold px-2 py-0.5 rounded border border-indigo-100">
+                    ${bList.length} ramuan direkodkan
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  ${Object.keys(groupedBahan).length === 0 ? `
+                    <p class="text-xs text-slate-500 italic p-2">Tiada bahan direkodkan.</p>
+                  ` : Object.keys(groupedBahan).map(groupName => `
+                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                      <h4 class="font-bold text-amber-800 text-[11px] mb-1 pb-0.5 border-b border-amber-200 flex items-center justify-between">
+                        <span>${escapeHtml(groupName)}</span>
+                        <span class="text-[9px] text-slate-500 font-normal">${groupedBahan[groupName].length} item</span>
+                      </h4>
+                      <ul class="space-y-1 text-[11px]">
+                        ${groupedBahan[groupName].map(b => `
+                          <li class="flex items-start justify-between py-0.5 border-b border-slate-200/50 text-slate-700 last:border-0">
+                            <span class="font-medium">• ${escapeHtml(b.Nama_Bahan)}</span>
+                            <span class="font-bold text-slate-900 ml-2 whitespace-nowrap">
+                              ${escapeHtml(b.Kuantiti)} ${b.Unit && b.Unit !== 'secukup rasa' ? escapeHtml(b.Unit) : ''}
+                            </span>
+                          </li>
+                        `).join('')}
+                      </ul>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Footer on Seksyen 1 -->
+            <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-[10px] text-slate-400 font-medium">
+              <div>
+                <span class="font-semibold text-slate-600">Dapur KEMAS • Unit PKK KEMAS Negeri Perlis</span>
+                <span class="hidden sm:inline text-slate-400 ml-2">| Seksyen 1: Profil & Bahan</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-indigo-600 font-semibold hidden sm:inline">Langkah Penyediaan di Halaman 2 →</span>
+                <span class="font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                  Halaman 1 / 2
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual Section Divider -->
+          <div class="w-full max-w-[210mm] py-2 flex flex-col items-center justify-center gap-2 text-xs">
+            <div class="w-full flex items-center gap-3">
+              <div class="h-px bg-zinc-800 flex-grow"></div>
+              <div class="px-4 py-1.5 bg-gradient-to-r from-indigo-950 via-zinc-900 to-indigo-950 text-indigo-300 rounded-full border border-indigo-500/30 text-[11px] font-bold flex items-center gap-2 shadow-lg">
+                <i data-lucide="chef-hat" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>PEMISAH SEKSYEN (SEKSYEN 2 BERMULA DI HALAMAN 2)</span>
+              </div>
+              <div class="h-px bg-zinc-800 flex-grow"></div>
+            </div>
+            <p class="text-[11px] text-zinc-500 text-center">
+              Seksyen 1 dicetak pada Muka Surat 1 • Seksyen 2 dicetak pada Muka Surat 2 (2 Halaman Lengkap)
+            </p>
+          </div>
+
+          <!-- SEKSYEN 2 (HALAMAN 2) -->
+          <div id="gas-pdf-page-2" class="bg-white w-full max-w-[210mm] p-6 sm:p-8 shadow-2xl rounded-2xl text-slate-800 font-sans border border-slate-200 flex flex-col justify-between" style="min-height: 270mm;">
+            <div class="space-y-3.5">
+              <!-- Running Header on Seksyen 2 -->
+              <div class="pb-2.5 border-b-2 border-indigo-200 flex justify-between items-center text-xs">
+                <div class="flex items-center gap-2 font-bold text-indigo-800">
+                  <i data-lucide="chef-hat" class="w-4 h-4 text-indigo-600 inline mr-1"></i>
+                  <div>
+                    <span class="text-slate-900 font-black block text-sm">Dapur KEMAS • Panduan Penyediaan Lengkap</span>
+                    <span class="text-[10px] text-slate-500 font-normal">Unit PKK KEMAS Negeri Perlis • Warisan Kulinari Tradisi</span>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end gap-0.5">
+                  <span class="inline-block bg-amber-50 text-amber-800 border border-amber-300 font-black text-[10px] px-2.5 py-0.5 rounded uppercase tracking-wider">
+                    SEKSYEN 2 DARI 2
+                  </span>
+                  <div class="flex items-center gap-1.5 text-[10px] text-slate-500">
+                    <span class="font-semibold text-slate-700 truncate max-w-[150px]">${escapeHtml(r.Nama_Resepi)}</span>
+                    <span>•</span>
+                    <span class="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.2 rounded border border-indigo-200">
+                      Halaman 2 / 2
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Steps Section -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between border-b-2 border-indigo-200 pb-1">
+                  <h3 class="text-xs sm:text-sm font-bold text-indigo-800 uppercase tracking-wide flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                    <span>Langkah-Langkah Penyediaan Berturutan</span>
+                  </h3>
+                  <span class="text-[10px] text-slate-600 bg-indigo-50 font-semibold px-2 py-0.5 rounded border border-indigo-100">
+                    ${lList.length} langkah lengkap
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  ${lList.length === 0 ? `
+                    <p class="text-xs text-slate-500 italic p-2">Tiada langkah direkodkan.</p>
+                  ` : lList.map(step => `
+                    <div class="flex items-start space-x-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
+                      <span class="bg-indigo-600 text-white font-black text-xs w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                        ${step.Nombor_Langkah}
+                      </span>
+                      <div class="space-y-0.5 text-xs flex-grow">
+                        <div class="flex items-baseline justify-between gap-2">
+                          <h4 class="font-bold text-slate-900 text-xs sm:text-sm">${escapeHtml(step.Tajuk_Langkah || 'Langkah ' + step.Nombor_Langkah)}</h4>
+                          ${step.Masa_Minit ? `
+                            <span class="inline-block text-[10px] text-amber-800 font-semibold bg-amber-50 border border-amber-200 px-2 py-0.5 rounded shrink-0">
+                              Masa: ${step.Masa_Minit} minit
+                            </span>
+                          ` : ''}
+                        </div>
+                        <p class="text-slate-700 leading-relaxed text-[11px] sm:text-xs">${escapeHtml(step.Arahan)}</p>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Amalan Kulinari & Piawaian KEMAS Perlis -->
+              <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-2.5 space-y-1">
+                <div class="flex items-center gap-1.5 text-amber-900 font-bold text-[11px]">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600 inline mr-1"></i>
+                  <span>Panduan Kulinari & Standard Masakan KEMAS Perlis:</span>
+                </div>
+                <p class="text-[10px] text-slate-700 leading-relaxed">
+                  Pastikan sukatan bahan diikuti dengan tepat untuk mengekalkan keaslian rasa pusaka warisan. Kawalan suhu api dan ketepatan masa menumis memastikan aroma rempah asli terpelihara dengan sempurna.
+                </p>
+              </div>
+            </div>
+
+            <!-- Official KEMAS Document Footer & Verification -->
+            <div class="pt-3 border-t-2 border-indigo-200 text-center text-[10px] text-slate-500 space-y-1">
+              <div class="font-bold text-slate-800 flex items-center justify-center gap-1.5">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-indigo-600 inline mr-1"></i>
+                <span>Dokumen Rasmi Dapur KEMAS • Unit Pembangunan Komuniti & Pendidikan Kemahiran (PKK) KEMAS Perlis</span>
+              </div>
+              <div class="text-slate-600">
+                Resepi disahkan oleh Pentadbir KEMAS • Dicipta oleh: <strong class="text-slate-800">${escapeHtml(r.Dicipta_Oleh || 'Staf KEMAS')}</strong>
+              </div>
+              <div class="flex justify-between items-center text-[9px] text-slate-400 font-mono pt-0.5">
+                <span>Dokumentasi Lengkap 2 Seksyen (2 Muka Surat)</span>
+                <span class="font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 font-sans">
+                  Seksyen 2 / Halaman 2 dari 2 (Tamat)
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function closePdfCookbookModal() {
+    const el = document.getElementById('pdf-cookbook-modal');
+    if (el) el.remove();
+  }
+
+  function scrollPdfSection(pageNumber) {
+    const target = document.getElementById(pageNumber === 1 ? 'gas-pdf-page-1' : 'gas-pdf-page-2');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Muat Turun Fail PDF 2 Halaman (Menggunakan html2canvas dan jsPDF)
+  async function downloadTwoPagePdf(recipeId) {
+    const btn = document.getElementById('gas-btn-download-pdf');
+    const page1 = document.getElementById('gas-pdf-page-1');
+    const page2 = document.getElementById('gas-pdf-page-2');
+
+    if (!page1 || !page2) {
+      showToast("Elemen dokumen PDF tidak dijumpai.", "error");
+      return;
+    }
+
+    if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
+      showToast("Pustaka PDF sedang dimuatkan, sila tunggu sebentar...", "info");
+      return;
+    }
+
+    const originalBtnHtml = btn.innerHTML;
+    btn.innerHTML = `
+      <span class="animate-spin inline-block">⏳</span>
+      <span>Menjana 2 Halaman...</span>
+    `;
+    btn.classList.add('opacity-80', 'cursor-wait');
+
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
+      const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
+
+      const canvasOptions = {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      };
+
+      // Tangkap Halaman 1 (Seksyen 1)
+      const canvas1 = await html2canvas(page1, canvasOptions);
+      const imgData1 = canvas1.toDataURL('image/jpeg', 0.95);
+      const ratio1 = Math.min(pdfWidth / canvas1.width, pdfHeight / canvas1.height);
+      const renderW1 = canvas1.width * ratio1;
+      const renderH1 = canvas1.height * ratio1;
+      const posX1 = (pdfWidth - renderW1) / 2;
+
+      pdf.addImage(imgData1, 'JPEG', posX1, 0, renderW1, renderH1);
+
+      // Tambah Halaman 2 (Seksyen 2)
+      pdf.addPage();
+      const canvas2 = await html2canvas(page2, canvasOptions);
+      const imgData2 = canvas2.toDataURL('image/jpeg', 0.95);
+      const ratio2 = Math.min(pdfWidth / canvas2.width, pdfHeight / canvas2.height);
+      const renderW2 = canvas2.width * ratio2;
+      const renderH2 = canvas2.height * ratio2;
+      const posX2 = (pdfWidth - renderW2) / 2;
+
+      pdf.addImage(imgData2, 'JPEG', posX2, 0, renderW2, renderH2);
+
+      const r = appState.recipes.find(item => item.ID_Resepi === recipeId);
+      const safeName = r && r.Nama_Resepi ? r.Nama_Resepi.replace(/[^a-zA-Z0-9\s_-]/g, '').trim().replace(/\s+/g, '_') : 'Resepi';
+      const filename = `Cookbook_${safeName}_2Page.pdf`;
+
+      pdf.save(filename);
+
+      btn.innerHTML = `
+        <span>✅</span>
+        <span>PDF Berjaya Dimuat Turun!</span>
+      `;
+      btn.className = "font-bold px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow-md bg-emerald-600 text-white cursor-pointer";
+
+      showToast("PDF 2 Halaman berjaya dimuat turun ke peranti!", "success");
+
+      setTimeout(() => {
+        if (btn) {
+          btn.innerHTML = originalBtnHtml;
+          btn.className = "font-bold px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow-md bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/30 cursor-pointer active:scale-95";
+          btn.classList.remove('opacity-80', 'cursor-wait');
+        }
+      }, 4000);
+
+    } catch (err) {
+      console.error("Ralat penjanaan PDF:", err);
+      showToast("Ralat menjana PDF: " + (err.message || err), "error");
+      btn.innerHTML = originalBtnHtml;
+      btn.classList.remove('opacity-80', 'cursor-wait');
+    }
+  }
+</script>

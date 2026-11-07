@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/* ========================================================================= */
+/* KEMAS 2-PAGE DEDICATED PRINT PORTAL STYLING                               */
+/* Fixes iOS Safari / WebKit 1-page overflow truncation bug                  */
+/* ========================================================================= */
+
+#kemas-print-portal {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  /* When printing, hide the entire React root app shell & modal overlays */
+  body.kemas-print-mode #root,
+  body:has(#kemas-print-portal) #root {
+    display: none !important;
+  }
+
+  /* Show ONLY the clean, unconstrained print portal directly under body */
+  body.kemas-print-mode #kemas-print-portal,
+  body:has(#kemas-print-portal) #kemas-print-portal {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100% !important;
+    max-height: none !important;
+    position: static !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* SEKSYEN 1 -> FORCED TO PAGE 1 */
+  .kemas-print-page-1 {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    height: 275mm !important;
+    max-height: 275mm !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    box-sizing: border-box !important;
+    padding: 6mm 8mm !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+  }
+
+  /* SEKSYEN 2 -> FORCED TO PAGE 2 */
+  .kemas-print-page-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: 260mm !important;
+    max-height: 275mm !important;
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    box-sizing: border-box !important;
+    padding: 6mm 8mm !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+  }
+
+  /* Fallback print rules if printed without portal */
+  .no-print {
+    display: none !important;
+  }
+
+  .print-avoid-break,
+  .break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}
+
+/* Hide scrollbars for slick mobile viewport simulation */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

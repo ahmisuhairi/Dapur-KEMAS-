@@ -1,0 +1,431 @@
+import {
+  ResepiMaster,
+  BahanResepi,
+  LangkahResepi,
+  Pengguna,
+  MasterDataState,
+} from '../types';
+
+export const initialMasterData: MasterDataState = {
+  Kategori_Masakan: [
+    { Nama: 'Tradisional Warisan', Aktif: true },
+    { Nama: 'Masakan Harian', Aktif: true },
+    { Nama: 'Kuih-Muih Tradisional', Aktif: true },
+    { Nama: 'Pencuci Mulut', Aktif: true },
+    { Nama: 'Minuman & Sarapan', Aktif: true },
+    { Nama: 'Panggang & BBQ', Aktif: true },
+  ],
+  Etnik_Kaum: [
+    { Nama: 'Melayu', Aktif: true },
+    { Nama: 'Cina', Aktif: true },
+    { Nama: 'India', Aktif: true },
+    { Nama: 'Peranakan / Nyonya', Aktif: true },
+    { Nama: 'Siam / Thai Perlis', Aktif: true },
+    { Nama: 'Sabah & Sarawak', Aktif: true },
+  ],
+  Negeri_Asal: [
+    { Nama: 'Perlis', Aktif: true },
+    { Nama: 'Kedah', Aktif: true },
+    { Nama: 'Pulau Pinang', Aktif: true },
+    { Nama: 'Perak', Aktif: true },
+    { Nama: 'Kelantan', Aktif: true },
+    { Nama: 'Terengganu', Aktif: true },
+    { Nama: 'Selangor', Aktif: true },
+    { Nama: 'Negeri Sembilan', Aktif: true },
+    { Nama: 'Johor', Aktif: true },
+    { Nama: 'Melaka', Aktif: true },
+    { Nama: 'Pahang', Aktif: true },
+  ],
+  Jenis_Hidangan: [
+    { Nama: 'Lauk Utama', Aktif: true },
+    { Nama: 'Pembuka Selera', Aktif: true },
+    { Nama: 'Sampingan & Ulaman', Aktif: true },
+    { Nama: 'Sup & Kuah', Aktif: true },
+    { Nama: 'Pencuci Mulut / Dessert', Aktif: true },
+    { Nama: 'Sarapan / Minum Petang', Aktif: true },
+  ],
+};
+
+export const initialUsers: Pengguna[] = [
+  {
+    Emel: 'admin.pkk@kemas.gov.my',
+    Nama: 'Ketua Unit PKK KEMAS Perlis',
+    Role: 'Admin',
+    Aktif: true,
+    Password: 'kemas123',
+  },
+  {
+    Emel: 'pm.masakan@kemas.gov.my',
+    Nama: 'Pn. Azizah (Pemaju Masyarakat Masakan)',
+    Role: 'Penyumbang',
+    Aktif: true,
+    Password: 'kemas123',
+  },
+  {
+    Emel: 'staf.kemas@kemas.gov.my',
+    Nama: 'En. Rosli (Peserta / Staf KEMAS)',
+    Role: 'Pengguna',
+    Aktif: true,
+    Password: 'kemas123',
+  },
+];
+
+export const initialRecipes: ResepiMaster[] = [
+  {
+    ID_Resepi: 'RSP-PERLIS-001',
+    Nama_Resepi: 'Rendang Daging Warisan Perlis',
+    Kategori_Masakan: 'Tradisional Warisan',
+    Etnik_Kaum: 'Melayu',
+    Negeri_Asal: 'Perlis',
+    Jenis_Hidangan: 'Lauk Utama',
+    Tahap_Kesukaran: 'Sederhana',
+    Masa_Penyediaan_Minit: 30,
+    Masa_Memasak_Minit: 90,
+    Bilangan_Hidangan: 6,
+    Deskripsi:
+      'Resepi ikonik warisan KEMAS Negeri Perlis. Menggunakan rempah-ratus segar tempatan, kerisik kelapa sangai wangi, dan santan pekat asli untuk menghasilkan rendang bersantan legap bernuansa tradisi utara.',
+    Gambar_Utama:
+      'https://images.unsplash.com/photo-1541832676-9b763b0239ab?auto=format&fit=crop&q=80&w=800',
+    Status: 'Diterbitkan',
+    Tarikh_Cipta: '2026-07-20T09:00:00.000Z',
+    Dicipta_Oleh: 'admin.pkk@kemas.gov.my',
+    Tarikh_Kemaskini: '2026-07-20T10:00:00.000Z',
+    Fail_PDF_Cookbook: 'PDF_Cookbook_Output/Cookbook_Rendang_Daging_Warisan_Perlis.pdf',
+  },
+  {
+    ID_Resepi: 'RSP-PERLIS-002',
+    Nama_Resepi: 'Laksa Perlis Berkuah Pekat',
+    Kategori_Masakan: 'Tradisional Warisan',
+    Etnik_Kaum: 'Melayu',
+    Negeri_Asal: 'Perlis',
+    Jenis_Hidangan: 'Lauk Utama',
+    Tahap_Kesukaran: 'Sederhana',
+    Masa_Penyediaan_Minit: 40,
+    Masa_Memasak_Minit: 45,
+    Bilangan_Hidangan: 5,
+    Deskripsi:
+      'Laksa Perlis mempunyai kelainan khas dengan kuah ikan selayang rebus berserta daun kesum, bunga kantan segar dan daun selasih utara yang mengharumkan aroma masakan.',
+    Gambar_Utama:
+      'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&q=80&w=800',
+    Status: 'Diterbitkan',
+    Tarikh_Cipta: '2026-07-21T11:00:00.000Z',
+    Dicipta_Oleh: 'pm.masakan@kemas.gov.my',
+    Tarikh_Kemaskini: '2026-07-22T08:30:00.000Z',
+    Fail_PDF_Cookbook: 'PDF_Cookbook_Output/Cookbook_Laksa_Perlis_Berkuah_Pekat.pdf',
+  },
+  {
+    ID_Resepi: 'RSP-PERLIS-003',
+    Nama_Resepi: 'Ikan Bakar Petai Sos Sambal Perlis',
+    Kategori_Masakan: 'Panggang & BBQ',
+    Etnik_Kaum: 'Siam / Thai Perlis',
+    Negeri_Asal: 'Perlis',
+    Jenis_Hidangan: 'Lauk Utama',
+    Tahap_Kesukaran: 'Mudah',
+    Masa_Penyediaan_Minit: 20,
+    Masa_Memasak_Minit: 25,
+    Bilangan_Hidangan: 4,
+    Deskripsi:
+      'Ikan siakap atau kembung segar dibalut daun pisang bersama pes sambal cili padi, asam jawa, dan taburan biji petai mentah lalu dibakar atas bara kayu.',
+    Gambar_Utama:
+      'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&q=80&w=800',
+    Status: 'Diterbitkan',
+    Tarikh_Cipta: '2026-07-22T14:00:00.000Z',
+    Dicipta_Oleh: 'pm.masakan@kemas.gov.my',
+    Tarikh_Kemaskini: '2026-07-22T14:00:00.000Z',
+    Fail_PDF_Cookbook: 'PDF_Cookbook_Output/Cookbook_Ikan_Bakar_Petai_Sos_Sambal_Perlis.pdf',
+  },
+  {
+    ID_Resepi: 'RSP-PERLIS-004',
+    Nama_Resepi: 'Pulut Mempelam Harum Manis Perlis',
+    Kategori_Masakan: 'Pencuci Mulut',
+    Etnik_Kaum: 'Melayu',
+    Negeri_Asal: 'Perlis',
+    Jenis_Hidangan: 'Pencuci Mulut / Dessert',
+    Tahap_Kesukaran: 'Mudah',
+    Masa_Penyediaan_Minit: 25,
+    Masa_Memasak_Minit: 30,
+    Bilangan_Hidangan: 4,
+    Deskripsi:
+      'Sajian pemanis mulut kebanggaan Negeri Perlis. Pulut kukus bersantan wangi disajikan bersama hirisan buah Mempelam Harum Manis manis lekit dan santan pekat bergaram halus.',
+    Gambar_Utama:
+      'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=800',
+    Status: 'Diterbitkan',
+    Tarikh_Cipta: '2026-07-24T08:00:00.000Z',
+    Dicipta_Oleh: 'admin.pkk@kemas.gov.my',
+    Tarikh_Kemaskini: '2026-07-24T08:00:00.000Z',
+    Fail_PDF_Cookbook: 'PDF_Cookbook_Output/Cookbook_Pulut_Mempelam_Harum_Manis_Perlis.pdf',
+  },
+  {
+    ID_Resepi: 'RSP-MALAYSIA-005',
+    Nama_Resepi: 'Kuih Seri Muka Pandan Tradisional',
+    Kategori_Masakan: 'Kuih-Muih Tradisional',
+    Etnik_Kaum: 'Melayu',
+    Negeri_Asal: 'Kedah',
+    Jenis_Hidangan: 'Sarapan / Minum Petang',
+    Tahap_Kesukaran: 'Sederhana',
+    Masa_Penyediaan_Minit: 30,
+    Masa_Memasak_Minit: 40,
+    Bilangan_Hidangan: 8,
+    Deskripsi:
+      'Kuih talam dua lapisan: lapisan bawah pulut gurih dan lapisan atas kastard pandan hijau lembut berasaskan ekstrak daun pandan asli dan santan kelapa segar.',
+    Gambar_Utama:
+      'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=800',
+    Status: 'Diterbitkan',
+    Tarikh_Cipta: '2026-07-25T10:00:00.000Z',
+    Dicipta_Oleh: 'pm.masakan@kemas.gov.my',
+    Tarikh_Kemaskini: '2026-07-25T10:00:00.000Z',
+    Fail_PDF_Cookbook: 'PDF_Cookbook_Output/Cookbook_Kuih_Seri_Muka_Pandan_Tradisional.pdf',
+  },
+  {
+    ID_Resepi: 'RSP-DRAFT-006',
+    Nama_Resepi: 'Gulai Kawah Daging Utara Bersama Umbut Pisang',
+    Kategori_Masakan: 'Tradisional Warisan',
+    Etnik_Kaum: 'Melayu',
+    Negeri_Asal: 'Perlis',
+    Jenis_Hidangan: 'Lauk Utama',
+    Tahap_Kesukaran: 'Sukar',
+    Masa_Penyediaan_Minit: 35,
+    Masa_Memasak_Minit: 75,
+    Bilangan_Hidangan: 10,
+    Deskripsi:
+      'Resepi gulai kawah katering kenduri warisan utara. Daging lembu pejal dimasak perlahan bersama umbut pisang segar dan pes rempah kawah kaya rempah ratus.',
+    Gambar_Utama:
+      'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&q=80&w=800',
+    Status: 'Draf',
+    Tarikh_Cipta: '2026-07-28T16:20:00.000Z',
+    Dicipta_Oleh: 'pm.masakan@kemas.gov.my',
+    Tarikh_Kemaskini: '2026-07-28T16:20:00.000Z',
+  },
+];
+
+export const initialBahanList: BahanResepi[] = [
+  // Rendang Daging Perlis
+  {
+    ID_Bahan: 'BHN-001',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Kumpulan_Bahan: 'Bahan Utama',
+    Nama_Bahan: 'Daging lembu pejal (dihiris tebal)',
+    Kuantiti: '1',
+    Unit: 'kg',
+    Turutan: 1,
+  },
+  {
+    ID_Bahan: 'BHN-002',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Kumpulan_Bahan: 'Bahan Utama',
+    Nama_Bahan: 'Santan pekat segar',
+    Kuantiti: '500',
+    Unit: 'ml',
+    Turutan: 2,
+  },
+  {
+    ID_Bahan: 'BHN-003',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Kumpulan_Bahan: 'Bahan Utama',
+    Nama_Bahan: 'Kerisik sangai wangi',
+    Kuantiti: '4',
+    Unit: 'sudu besar',
+    Turutan: 3,
+  },
+  {
+    ID_Bahan: 'BHN-004',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Kumpulan_Bahan: 'Bahan Kisar',
+    Nama_Bahan: 'Bawang merah kecil',
+    Kuantiti: '12',
+    Unit: 'ulas',
+    Turutan: 4,
+  },
+  {
+    ID_Bahan: 'BHN-005',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Kumpulan_Bahan: 'Bahan Kisar',
+    Nama_Bahan: 'Bawang putih & Halia',
+    Kuantiti: '5',
+    Unit: 'ulas',
+    Turutan: 5,
+  },
+  {
+    ID_Bahan: 'BHN-006',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Kumpulan_Bahan: 'Bahan Kisar',
+    Nama_Bahan: 'Serai segar & Lengkuas',
+    Kuantiti: '4',
+    Unit: 'biji',
+    Turutan: 6,
+  },
+  {
+    ID_Bahan: 'BHN-007',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Kumpulan_Bahan: 'Bahan Aromatik',
+    Nama_Bahan: 'Daun kunyit (dicarik halus)',
+    Kuantiti: '2',
+    Unit: 'biji',
+    Turutan: 7,
+  },
+  {
+    ID_Bahan: 'BHN-008',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Kumpulan_Bahan: 'Perasa',
+    Nama_Bahan: 'Gula melaka & Garam',
+    Kuantiti: 'secukup rasa',
+    Unit: 'secukup rasa',
+    Turutan: 8,
+  },
+
+  // Laksa Perlis
+  {
+    ID_Bahan: 'BHN-010',
+    ID_Resepi: 'RSP-PERLIS-002',
+    Kumpulan_Bahan: 'Bahan Kuah',
+    Nama_Bahan: 'Ikan selayang / kembung (direbus & diasingkan isi)',
+    Kuantiti: '1',
+    Unit: 'kg',
+    Turutan: 1,
+  },
+  {
+    ID_Bahan: 'BHN-011',
+    ID_Resepi: 'RSP-PERLIS-002',
+    Kumpulan_Bahan: 'Bahan Kuah',
+    Nama_Bahan: 'Asam keping & Asam jawa',
+    Kuantiti: '6',
+    Unit: 'biji',
+    Turutan: 2,
+  },
+  {
+    ID_Bahan: 'BHN-012',
+    ID_Resepi: 'RSP-PERLIS-002',
+    Kumpulan_Bahan: 'Ulaman & Hidangan',
+    Nama_Bahan: 'Laksa beras segar',
+    Kuantiti: '1',
+    Unit: 'kg',
+    Turutan: 3,
+  },
+  {
+    ID_Bahan: 'BHN-013',
+    ID_Resepi: 'RSP-PERLIS-002',
+    Kumpulan_Bahan: 'Ulaman & Hidangan',
+    Nama_Bahan: 'Daun kesum, Bunga kantan, Daun selasih utara',
+    Kuantiti: 'secukup rasa',
+    Unit: 'secukup rasa',
+    Turutan: 4,
+  },
+
+  // Pulut Mempelam Harum Manis
+  {
+    ID_Bahan: 'BHN-020',
+    ID_Resepi: 'RSP-PERLIS-004',
+    Kumpulan_Bahan: 'Bahan Pulut',
+    Nama_Bahan: 'Beras pulut susu (direndam 3 jam)',
+    Kuantiti: '500',
+    Unit: 'gram',
+    Turutan: 1,
+  },
+  {
+    ID_Bahan: 'BHN-021',
+    ID_Resepi: 'RSP-PERLIS-004',
+    Kumpulan_Bahan: 'Bahan Santan',
+    Nama_Bahan: 'Santan kelapa segar & Garam',
+    Kuantiti: '300',
+    Unit: 'ml',
+    Turutan: 2,
+  },
+  {
+    ID_Bahan: 'BHN-022',
+    ID_Resepi: 'RSP-PERLIS-004',
+    Kumpulan_Bahan: 'Buah Utama',
+    Nama_Bahan: 'Mempelam Harum Manis Perlis (masak ranum)',
+    Kuantiti: '3',
+    Unit: 'biji',
+    Turutan: 3,
+  },
+];
+
+export const initialLangkahList: LangkahResepi[] = [
+  // Rendang Daging Perlis Steps
+  {
+    ID_Langkah: 'LKG-001',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Nombor_Langkah: 1,
+    Tajuk_Langkah: 'Penyediaan Bahan & Kisar Rempah',
+    Arahan:
+      'Kisar kering dan basah bawang merah, bawang putih, halia, lengkuas, serai, dan cili kering hingga halus berkilat.',
+    Masa_Minit: 15,
+  },
+  {
+    ID_Langkah: 'LKG-002',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Nombor_Langkah: 2,
+    Tajuk_Langkah: 'Menumis & Memasak Daging',
+    Arahan:
+      'Masukkan bahan kisar ke dalam kawah/periuk bersama daging hiris. Masak atas api sederhana hingga air daging keluar dan sedikit kecut.',
+    Masa_Minit: 20,
+  },
+  {
+    ID_Langkah: 'LKG-003',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Nombor_Langkah: 3,
+    Tajuk_Langkah: 'Penebalan Santan & Kerisik',
+    Arahan:
+      'Tuangkan santan pekat dan kerisik sangai. Kacau secara konsisten agar santan tidak pecah minyak terlampau awal.',
+    Masa_Minit: 30,
+  },
+  {
+    ID_Langkah: 'LKG-004',
+    ID_Resepi: 'RSP-PERLIS-001',
+    Nombor_Langkah: 4,
+    Tajuk_Langkah: 'Renihan & Pelengkap Daun Kunyit',
+    Arahan:
+      'Masukkan gula melaka, garam secukup rasa, dan carikan daun kunyit segar. Renih dengan api kecil sehingga rendang pekat legap berminyak indah.',
+    Masa_Minit: 25,
+  },
+
+  // Laksa Perlis Steps
+  {
+    ID_Langkah: 'LKG-010',
+    ID_Resepi: 'RSP-PERLIS-002',
+    Nombor_Langkah: 1,
+    Tajuk_Langkah: 'Penyediaan Isi Ikan & Rebusan',
+    Arahan:
+      'Rebus ikan selayang segar bersama asam keping. Asingkan isi ikan daripada tulang. Kisar sebahagian tulang ikan untuk stok kuah yang manis.',
+    Masa_Minit: 20,
+  },
+  {
+    ID_Langkah: 'LKG-011',
+    ID_Resepi: 'RSP-PERLIS-002',
+    Nombor_Langkah: 2,
+    Tajuk_Langkah: 'Memasak Kuah Laksa Utuh',
+    Arahan:
+      'Campurkan isi ikan kisar halus, stok tulang ikan, cili kisar, asam jawa, daun kesum, dan bunga kantan belah dua. Renihkan hingga mendidih pekat.',
+    Masa_Minit: 25,
+  },
+  {
+    ID_Langkah: 'LKG-012',
+    ID_Resepi: 'RSP-PERLIS-002',
+    Nombor_Langkah: 3,
+    Tajuk_Langkah: 'Penyajian Bersama Ulaman Fresh',
+    Arahan:
+      'Celur laksa beras, tuangkan kuah panas mesra, dan hiaskan dengan irisan bawang, cili padi, telur rebus, dan daun selasih khas Perlis.',
+    Masa_Minit: 10,
+  },
+
+  // Pulut Mempelam Steps
+  {
+    ID_Langkah: 'LKG-020',
+    ID_Resepi: 'RSP-PERLIS-004',
+    Nombor_Langkah: 1,
+    Tajuk_Langkah: 'Mengukus Pulut Bersantan',
+    Arahan:
+      'Kukus beras pulut bersantan yang telah digaul garam selama 25 minit hingga empuk berkilat.',
+    Masa_Minit: 25,
+  },
+  {
+    ID_Langkah: 'LKG-021',
+    ID_Resepi: 'RSP-PERLIS-004',
+    Nombor_Langkah: 2,
+    Tajuk_Langkah: 'Menyediakan Sos Santan & Hirisan Harum Manis',
+    Arahan:
+      'Masak lebihan santan dengan sedikit tepung beras dan garam hingga pekat meletup-letup. Potong buah Harum Manis dan hidangkan bersama pulut panas.',
+    Masa_Minit: 10,
+  },
+];

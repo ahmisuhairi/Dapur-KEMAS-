@@ -1,0 +1,6 @@
+{
+  "name": "Dapur KEMAS",
+  "description": "Sistem Resepi Masakan Digital Warisan Malaysia & Asia - Unit PKK KEMAS Negeri Perlis",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
